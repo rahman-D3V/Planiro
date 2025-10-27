@@ -6,7 +6,6 @@ import ProgressTracker from "./components/ProgressTracker";
 function App() {
   const [count, setCount] = useState(0);
   const [tasks, setTasks] = useState(() => {
-    // load initial tasks from localStorage (if any)
     const raw = localStorage.getItem("Tasks");
     return raw ? JSON.parse(raw) : [];
   });
@@ -23,7 +22,6 @@ function App() {
     setTasks(prev => prev.filter((_, i) => i !== indx));
   }
 
-  // toggle completion for task at `index`
   function toggleComplete(index) {
     setTasks(prev =>
       prev.map((eachTask, i) =>
@@ -33,27 +31,50 @@ function App() {
   }
 
   return (
-    <>
-      <div>
-        <h1>Planiro</h1>
-        <p>Less chaos. More control.</p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      {/* Header Section */}
+      <div className="max-w-4xl mx-auto px-4 pt-16 pb-8">
+        <div className="text-center mb-12">
+          <h1 className="text-6xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-3">
+            Planiro
+          </h1>
+          <p className="text-xl text-slate-600 font-medium">
+            Less chaos. More control.
+          </p>
+        </div>
+
+        {/* Task Form Card */}
+        <div className="mb-8">
+          <TaskForm addTask={addTask} />
+        </div>
+
+        {/* Progress Tracker */}
+        <div className="mb-8">
+          <ProgressTracker tasks={tasks} />
+        </div>
+
+        {/* Task List */}
+        <div className="mb-8">
+          <TaskList
+            tasks={tasks}
+            toggleComplete={toggleComplete}
+            deleteTask={deleteTask}
+          />
+        </div>
+
+        {/* Clear All Button */}
+        {tasks.length > 0 && (
+          <div className="flex justify-center">
+            <button 
+              onClick={() => setTasks([])}
+              className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+            >
+              Clear All Tasks
+            </button>
+          </div>
+        )}
       </div>
-
-      <TaskForm addTask={addTask} />
-
-      <TaskList
-        tasks={tasks}
-        toggleComplete={toggleComplete}
-        deleteTask={deleteTask}
-      />
-
-      <ProgressTracker tasks={tasks} />
-
-      {/* Clear all tasks btn */}
-      {
-        tasks.length > 0 && <button onClick={() => setTasks([])}>Clear All Tasks</button>
-      }
-    </>
+    </div>
   );
 }
 
